@@ -1,0 +1,32 @@
+plugins {
+    id("com.android.application")
+}
+
+android {
+    namespace = "com.aigestudio.wheelpicker.demo"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.aigestudio.wheelpicker.demo"
+        minSdk = 21
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation(project(":WheelPicker"))
+}

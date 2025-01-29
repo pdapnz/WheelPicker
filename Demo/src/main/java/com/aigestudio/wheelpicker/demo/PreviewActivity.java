@@ -27,16 +27,13 @@ public class PreviewActivity extends Activity implements WheelPicker.OnItemSelec
     @Override
     public void onItemSelected(WheelPicker picker, Object data, int position) {
         String text = "";
-        switch (picker.getId()) {
-            case R.id.main_wheel_left:
-                text = "Left:";
-                break;
-            case R.id.main_wheel_center:
-                text = "Center:";
-                break;
-            case R.id.main_wheel_right:
-                text = "Right:";
-                break;
+        int id = picker.getId();
+        if (id == R.id.main_wheel_left) {
+            text = "Left:";
+        } else if (id == R.id.main_wheel_center) {
+            text = "Center:";
+        } else if (id == R.id.main_wheel_right) {
+            text = "Right:";
         }
         Toast.makeText(this, text + String.valueOf(data), Toast.LENGTH_SHORT).show();
     }
