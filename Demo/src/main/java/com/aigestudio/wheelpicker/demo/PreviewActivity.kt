@@ -1,15 +1,15 @@
 package com.aigestudio.wheelpicker.demo
 
-import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.aigestudio.wheelpicker.WheelPicker
 
 /**
  * @author AigeStudio 2015-12-06
  * @author AigeStudio 2016-07-08
  */
-class PreviewActivity : Activity(), WheelPicker.OnItemSelectedListener {
+class PreviewActivity : AppCompatActivity(), WheelPicker.OnItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ac_preview)

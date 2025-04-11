@@ -3,7 +3,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="WheelPickerDemo"
-        android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+        android:theme="@style/Theme.WheelPicker">
         <activity
             android:name=".PreviewActivity"
             android:exported="true"
