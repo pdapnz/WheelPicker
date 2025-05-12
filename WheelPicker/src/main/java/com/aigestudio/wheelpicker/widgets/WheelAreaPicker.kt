@@ -23,21 +23,21 @@ class WheelAreaPicker(context: Context, attrs: AttributeSet?) : LinearLayout(con
         private const val PROVINCE_INITIAL_INDEX = 0
     }
 
-    private var mProvinceList: List<Province> = ArrayList()
-    private var mCityList: List<City> = ArrayList()
-    private val mProvinceName = ArrayList<String>()
-    private val mCityName = ArrayList<String>()
+    private var provinceList: List<Province> = ArrayList()
+    private var cityList: List<City> = ArrayList()
+    private val provinceNames = ArrayList<String>()
+    private val cityNames = ArrayList<String>()
 
-    private lateinit var mLayoutParams: LayoutParams
+    private lateinit var pickerLayoutParams: LayoutParams
 
-    private lateinit var mWPProvince: WheelPicker
-    private lateinit var mWPCity: WheelPicker
-    private lateinit var mWPArea: WheelPicker
+    private lateinit var provincePicker: WheelPicker
+    private lateinit var cityPicker: WheelPicker
+    private lateinit var areaPicker: WheelPicker
 
     init {
         initLayoutParams()
         initView(context)
-        mProvinceList = getJsonDataFromAssets(context) ?: ArrayList()
+        provinceList = getJsonDataFromAssets(context) ?: ArrayList()
         obtainProvinceData()
         addListenerToWheelPicker()
     }
@@ -57,103 +57,100 @@ class WheelAreaPicker(context: Context, attrs: AttributeSet?) : LinearLayout(con
     }
 
     private fun initLayoutParams() {
-        mLayoutParams = LayoutParams(
+        pickerLayoutParams = LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        mLayoutParams.setMargins(5, 5, 5, 5)
-        mLayoutParams.width = 0
+        pickerLayoutParams.setMargins(5, 5, 5, 5)
+        pickerLayoutParams.width = 0
     }
 
     private fun initView(context: Context) {
         orientation = HORIZONTAL
 
-        mWPProvince = WheelPicker(context)
-        mWPCity = WheelPicker(context)
-        mWPArea = WheelPicker(context)
+        provincePicker = WheelPicker(context)
+        cityPicker = WheelPicker(context)
+        areaPicker = WheelPicker(context)
 
-        initWheelPicker(mWPProvince, 1f)
-        initWheelPicker(mWPCity, 1.5f)
-        initWheelPicker(mWPArea, 1.5f)
+        initWheelPicker(provincePicker, 1f)
+        initWheelPicker(cityPicker, 1.5f)
+        initWheelPicker(areaPicker, 1.5f)
     }
 
     private fun initWheelPicker(wheelPicker: WheelPicker, weight: Float) {
-        mLayoutParams.weight = weight
+        pickerLayoutParams.weight = weight
         wheelPicker.itemTextSize = dip2px(context, ITEM_TEXT_SIZE)
         wheelPicker.selectedItemTextColor = Color.parseColor(SELECTED_ITEM_COLOR)
         wheelPicker.isCurved = true
-        wheelPicker.layoutParams = mLayoutParams
+        wheelPicker.layoutParams = pickerLayoutParams
         addView(wheelPicker)
     }
 
     private fun obtainProvinceData() {
-        if (mProvinceList.isEmpty()) return
-        for (province in mProvinceList) {
-            province.name?.let { mProvinceName.add(it) }
+        if (provinceList.isEmpty()) return
+        for (province in provinceList) {
+            province.name?.let { provinceNames.add(it) }
         }
-        mWPProvince.data = mProvinceName
+        provincePicker.data = provinceNames
         setCityAndAreaData(PROVINCE_INITIAL_INDEX)
     }
 
     private fun addListenerToWheelPicker() {
         //监听省份的滑轮,根据省份的滑轮滑动的数据来设置市跟地区的滑轮数据
-        mWPProvince.setOnItemSelectedListener(object : WheelPicker.OnItemSelectedListener {
+        provincePicker.setOnItemSelectedListener(object : WheelPicker.OnItemSelectedListener {
             override fun onItemSelected(picker: WheelPicker, data: Any?, position: Int) {
                 //获得该省所有城市的集合
-                if (position < mProvinceList.size) {
-                    mCityList = mProvinceList[position].city
+                if (position < provinceList.size) {
+                    cityList = provinceList[position].city
                     setCityAndAreaData(position)
                 }
             }
         })
 
-        mWPCity.setOnItemSelectedListener(object : WheelPicker.OnItemSelectedListener {
+        cityPicker.setOnItemSelectedListener(object : WheelPicker.OnItemSelectedListener {
             override fun onItemSelected(picker: WheelPicker, data: Any?, position: Int) {
                 //获取城市对应的城区的名字
-                if (position < mCityList.size) {
-                    mWPArea.data = mCityList[position].area
-                    mWPArea.selectedItemPosition = 0
+                if (position < cityList.size) {
+                    areaPicker.data = cityList[position].area
+                    areaPicker.selectedItemPosition = 0
                 }
             }
         })
     }
 
     private fun setCityAndAreaData(position: Int) {
-        if (position >= mProvinceList.size) return
+        if (position >= provinceList.size) return
         //获得该省所有城市的集合
-        mCityList = mProvinceList[position].city
+        cityList = provinceList[position].city
         //获取所有city的名字
         //重置先前的城市集合数据
-        mCityName.clear()
-        for (city in mCityList)
-            city.name?.let { mCityName.add(it) }
-        mWPCity.data = mCityName
-        mWPCity.selectedItemPosition = 0
+        cityNames.clear()
+        for (city in cityList)
+            city.name?.let { cityNames.add(it) }
+        cityPicker.data = cityNames
+        cityPicker.selectedItemPosition = 0
         //获取第一个城市对应的城区的名字
         //重置先前的城区集合的数据
-        if (mCityList.isNotEmpty()) {
-            mWPArea.data = mCityList[0].area
-            mWPArea.selectedItemPosition = 0
+        if (cityList.isNotEmpty()) {
+            areaPicker.data = cityList[0].area
+            areaPicker.selectedItemPosition = 0
         } else {
-            mWPArea.data = emptyList<String>()
+            areaPicker.data = emptyList<String>()
         }
     }
 
     override val province: String?
-        get() = mProvinceList.getOrNull(mWPProvince.currentItemPosition)?.name
+        get() = provinceList.getOrNull(provincePicker.currentItemPosition)?.name
 
     override val city: String?
-        get() = mCityList.getOrNull(mWPCity.currentItemPosition)?.name
+        get() = cityList.getOrNull(cityPicker.currentItemPosition)?.name
 
     override val area: String?
-        get() = mCityList.getOrNull(mWPCity.currentItemPosition)?.area?.getOrNull(mWPArea.currentItemPosition)
+        get() = cityList.getOrNull(cityPicker.currentItemPosition)?.area?.getOrNull(areaPicker.currentItemPosition)
 
     override fun hideArea() {
-        // this.removeViewAt(2) 
-        // Index 2 might not exist or might not be Area picker if called multiple times or order changed.
-        // Better safely remove mWPArea
-        if (indexOfChild(mWPArea) != -1) {
-            removeView(mWPArea)
+        if (indexOfChild(areaPicker) != -1) {
+            removeView(areaPicker)
         }
     }
 

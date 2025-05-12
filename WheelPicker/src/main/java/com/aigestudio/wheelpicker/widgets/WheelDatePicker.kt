@@ -24,84 +24,84 @@ class WheelDatePicker @JvmOverloads constructor(
         private val SDF = SimpleDateFormat("yyyy-M-d", Locale.getDefault())
     }
 
-    private val mPickerYear: WheelYearPicker
-    private val mPickerMonth: WheelMonthPicker
-    private val mPickerDay: WheelDayPicker
+    private val pickerYear: WheelYearPicker
+    private val pickerMonth: WheelMonthPicker
+    private val pickerDay: WheelDayPicker
 
-    private var mListener: OnDateSelectedListener? = null
+    private var onDateSelectedListener: OnDateSelectedListener? = null
 
-    private val mTVYear: TextView
-    private val mTVMonth: TextView
-    private val mTVDay: TextView
+    private val tvYear: TextView
+    private val tvMonth: TextView
+    private val tvDay: TextView
 
-    private var mYear: Int = 0
-    private var mMonth: Int = 0
-    private var mDay: Int = 0
+    private var _year: Int = 0
+    private var _month: Int = 0
+    private var _day: Int = 0
 
     override val wheelYearPicker: WheelYearPicker
-        get() = mPickerYear
+        get() = pickerYear
 
     override val wheelMonthPicker: WheelMonthPicker
-        get() = mPickerMonth
+        get() = pickerMonth
 
     override val wheelDayPicker: WheelDayPicker
-        get() = mPickerDay
+        get() = pickerDay
 
     override val textViewYear: TextView
-        get() = mTVYear
+        get() = tvYear
 
     override val textViewMonth: TextView
-        get() = mTVMonth
+        get() = tvMonth
 
     override val textViewDay: TextView
-        get() = mTVDay
+        get() = tvDay
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_wheel_date_picker, this)
 
-        mPickerYear = findViewById(R.id.wheel_date_picker_year)
-        mPickerMonth = findViewById(R.id.wheel_date_picker_month)
-        mPickerDay = findViewById(R.id.wheel_date_picker_day)
-        mPickerYear.setOnItemSelectedListener(this)
-        mPickerMonth.setOnItemSelectedListener(this)
-        mPickerDay.setOnItemSelectedListener(this)
+        pickerYear = findViewById(R.id.wheel_date_picker_year)
+        pickerMonth = findViewById(R.id.wheel_date_picker_month)
+        pickerDay = findViewById(R.id.wheel_date_picker_day)
+        pickerYear.setOnItemSelectedListener(this)
+        pickerMonth.setOnItemSelectedListener(this)
+        pickerDay.setOnItemSelectedListener(this)
 
         setMaximumWidthTextYear()
-        mPickerMonth.maximumWidthText = "00"
-        mPickerDay.maximumWidthText = "00"
+        pickerMonth.maximumWidthText = "00"
+        pickerDay.maximumWidthText = "00"
 
-        mTVYear = findViewById(R.id.wheel_date_picker_year_tv)
-        mTVMonth = findViewById(R.id.wheel_date_picker_month_tv)
-        mTVDay = findViewById(R.id.wheel_date_picker_day_tv)
+        tvYear = findViewById(R.id.wheel_date_picker_year_tv)
+        tvMonth = findViewById(R.id.wheel_date_picker_month_tv)
+        tvDay = findViewById(R.id.wheel_date_picker_day_tv)
 
-        mYear = mPickerYear.currentYear
-        mMonth = mPickerMonth.currentMonth
-        mDay = mPickerDay.currentDay
+        _year = pickerYear.currentYear
+        _month = pickerMonth.currentMonth
+        _day = pickerDay.currentDay
     }
 
     private fun setMaximumWidthTextYear() {
-        val years = mPickerYear.data ?: return
+        val years = pickerYear.data ?: return
         if (years.isEmpty()) return
         val lastYear = years.last().toString()
         val sb = StringBuilder()
         for (i in lastYear.indices) sb.append("0")
-        mPickerYear.maximumWidthText = sb.toString()
+        pickerYear.maximumWidthText = sb.toString()
     }
 
     override fun onItemSelected(picker: WheelPicker, data: Any?, position: Int) {
         if (picker.id == R.id.wheel_date_picker_year) {
-            mYear = data.toString().toInt()
-            mPickerDay.year = mYear
+            _year = data.toString().toInt()
+            pickerDay.year = _year
         } else if (picker.id == R.id.wheel_date_picker_month) {
-            mMonth = data.toString().toInt()
-            mPickerDay.month = mMonth
+            _month = data.toString().toInt()
+            pickerDay.month = _month
         }
-        mDay = mPickerDay.currentDay
-        val date = "$mYear-$mMonth-$mDay"
+        _day = pickerDay.currentDay
+        val date = "$_year-$_month-$_day"
         try {
             val parsedDate = SDF.parse(date)
             if (parsedDate != null) {
-                mListener?.onDateSelected(this, parsedDate)
+                onDateSelectedListener?.onDateSelected(this, parsedDate)
             }
         } catch (e: ParseException) {
             e.printStackTrace()
@@ -109,32 +109,32 @@ class WheelDatePicker @JvmOverloads constructor(
     }
 
     override fun setDebug(isDebug: Boolean) {
-        mPickerYear.setDebug(isDebug)
-        mPickerMonth.setDebug(isDebug)
-        mPickerDay.setDebug(isDebug)
+        pickerYear.setDebug(isDebug)
+        pickerMonth.setDebug(isDebug)
+        pickerDay.setDebug(isDebug)
     }
 
     override var visibleItemCount: Int
         get() {
-            if (mPickerYear.visibleItemCount == mPickerMonth.visibleItemCount &&
-                mPickerMonth.visibleItemCount == mPickerDay.visibleItemCount
+            if (pickerYear.visibleItemCount == pickerMonth.visibleItemCount &&
+                pickerMonth.visibleItemCount == pickerDay.visibleItemCount
             ) {
-                return mPickerYear.visibleItemCount
+                return pickerYear.visibleItemCount
             }
             throw ArithmeticException("Can not get visible item count correctly from WheelDatePicker!")
         }
         set(count) {
-            mPickerYear.visibleItemCount = count
-            mPickerMonth.visibleItemCount = count
-            mPickerDay.visibleItemCount = count
+            pickerYear.visibleItemCount = count
+            pickerMonth.visibleItemCount = count
+            pickerDay.visibleItemCount = count
         }
 
     override var isCyclic: Boolean
-        get() = mPickerYear.isCyclic && mPickerMonth.isCyclic && mPickerDay.isCyclic
+        get() = pickerYear.isCyclic && pickerMonth.isCyclic && pickerDay.isCyclic
         set(isCyclic) {
-            mPickerYear.isCyclic = isCyclic
-            mPickerMonth.isCyclic = isCyclic
-            mPickerDay.isCyclic = isCyclic
+            pickerYear.isCyclic = isCyclic
+            pickerMonth.isCyclic = isCyclic
+            pickerDay.isCyclic = isCyclic
         }
 
     @Deprecated("Unsupported", ReplaceWith("nothing"))
@@ -192,139 +192,139 @@ class WheelDatePicker @JvmOverloads constructor(
 
     override var selectedItemTextColor: Int
         get() {
-            if (mPickerYear.selectedItemTextColor == mPickerMonth.selectedItemTextColor &&
-                mPickerMonth.selectedItemTextColor == mPickerDay.selectedItemTextColor
+            if (pickerYear.selectedItemTextColor == pickerMonth.selectedItemTextColor &&
+                pickerMonth.selectedItemTextColor == pickerDay.selectedItemTextColor
             ) {
-                return mPickerYear.selectedItemTextColor
+                return pickerYear.selectedItemTextColor
             }
             throw RuntimeException("Can not get color of selected item text correctly from WheelDatePicker!")
         }
         set(color) {
-            mPickerYear.selectedItemTextColor = color
-            mPickerMonth.selectedItemTextColor = color
-            mPickerDay.selectedItemTextColor = color
+            pickerYear.selectedItemTextColor = color
+            pickerMonth.selectedItemTextColor = color
+            pickerDay.selectedItemTextColor = color
         }
 
     override var itemTextColor: Int
         get() {
-            if (mPickerYear.itemTextColor == mPickerMonth.itemTextColor &&
-                mPickerMonth.itemTextColor == mPickerDay.itemTextColor
+            if (pickerYear.itemTextColor == pickerMonth.itemTextColor &&
+                pickerMonth.itemTextColor == pickerDay.itemTextColor
             ) {
-                return mPickerYear.itemTextColor
+                return pickerYear.itemTextColor
             }
             throw RuntimeException("Can not get color of item text correctly from WheelDatePicker!")
         }
         set(color) {
-            mPickerYear.itemTextColor = color
-            mPickerMonth.itemTextColor = color
-            mPickerDay.itemTextColor = color
+            pickerYear.itemTextColor = color
+            pickerMonth.itemTextColor = color
+            pickerDay.itemTextColor = color
         }
 
     override var itemTextSize: Int
         get() {
-            if (mPickerYear.itemTextSize == mPickerMonth.itemTextSize &&
-                mPickerMonth.itemTextSize == mPickerDay.itemTextSize
+            if (pickerYear.itemTextSize == pickerMonth.itemTextSize &&
+                pickerMonth.itemTextSize == pickerDay.itemTextSize
             ) {
-                return mPickerYear.itemTextSize
+                return pickerYear.itemTextSize
             }
             throw RuntimeException("Can not get size of item text correctly from WheelDatePicker!")
         }
         set(size) {
-            mPickerYear.itemTextSize = size
-            mPickerMonth.itemTextSize = size
-            mPickerDay.itemTextSize = size
+            pickerYear.itemTextSize = size
+            pickerMonth.itemTextSize = size
+            pickerDay.itemTextSize = size
         }
 
     override var itemSpace: Int
         get() {
-            if (mPickerYear.itemSpace == mPickerMonth.itemSpace &&
-                mPickerMonth.itemSpace == mPickerDay.itemSpace
+            if (pickerYear.itemSpace == pickerMonth.itemSpace &&
+                pickerMonth.itemSpace == pickerDay.itemSpace
             ) {
-                return mPickerYear.itemSpace
+                return pickerYear.itemSpace
             }
             throw RuntimeException("Can not get item space correctly from WheelDatePicker!")
         }
         set(space) {
-            mPickerYear.itemSpace = space
-            mPickerMonth.itemSpace = space
-            mPickerDay.itemSpace = space
+            pickerYear.itemSpace = space
+            pickerMonth.itemSpace = space
+            pickerDay.itemSpace = space
         }
 
     override var isIndicator: Boolean
-        get() = mPickerYear.isIndicator && mPickerMonth.isIndicator && mPickerDay.isIndicator
+        get() = pickerYear.isIndicator && pickerMonth.isIndicator && pickerDay.isIndicator
         set(hasIndicator) {
-            mPickerYear.isIndicator = hasIndicator
-            mPickerMonth.isIndicator = hasIndicator
-            mPickerDay.isIndicator = hasIndicator
+            pickerYear.isIndicator = hasIndicator
+            pickerMonth.isIndicator = hasIndicator
+            pickerDay.isIndicator = hasIndicator
         }
 
     override var indicatorSize: Int
         get() {
-            if (mPickerYear.indicatorSize == mPickerMonth.indicatorSize &&
-                mPickerMonth.indicatorSize == mPickerDay.indicatorSize
+            if (pickerYear.indicatorSize == pickerMonth.indicatorSize &&
+                pickerMonth.indicatorSize == pickerDay.indicatorSize
             ) {
-                return mPickerYear.indicatorSize
+                return pickerYear.indicatorSize
             }
             throw RuntimeException("Can not get indicator size correctly from WheelDatePicker!")
         }
         set(size) {
-            mPickerYear.indicatorSize = size
-            mPickerMonth.indicatorSize = size
-            mPickerDay.indicatorSize = size
+            pickerYear.indicatorSize = size
+            pickerMonth.indicatorSize = size
+            pickerDay.indicatorSize = size
         }
 
     override var indicatorColor: Int
         get() {
-            if (mPickerYear.indicatorColor == mPickerMonth.indicatorColor &&
-                mPickerMonth.indicatorColor == mPickerDay.indicatorColor
+            if (pickerYear.indicatorColor == pickerMonth.indicatorColor &&
+                pickerMonth.indicatorColor == pickerDay.indicatorColor
             ) {
-                return mPickerYear.indicatorColor
+                return pickerYear.indicatorColor
             }
             throw RuntimeException("Can not get indicator color correctly from WheelDatePicker!")
         }
         set(color) {
-            mPickerYear.indicatorColor = color
-            mPickerMonth.indicatorColor = color
-            mPickerDay.indicatorColor = color
+            pickerYear.indicatorColor = color
+            pickerMonth.indicatorColor = color
+            pickerDay.indicatorColor = color
         }
 
     override var isCurtain: Boolean
-        get() = mPickerYear.isCurtain && mPickerMonth.isCurtain && mPickerDay.isCurtain
+        get() = pickerYear.isCurtain && pickerMonth.isCurtain && pickerDay.isCurtain
         set(hasCurtain) {
-            mPickerYear.isCurtain = hasCurtain
-            mPickerMonth.isCurtain = hasCurtain
-            mPickerDay.isCurtain = hasCurtain
+            pickerYear.isCurtain = hasCurtain
+            pickerMonth.isCurtain = hasCurtain
+            pickerDay.isCurtain = hasCurtain
         }
 
     override var curtainColor: Int
         get() {
-            if (mPickerYear.curtainColor == mPickerMonth.curtainColor &&
-                mPickerMonth.curtainColor == mPickerDay.curtainColor
+            if (pickerYear.curtainColor == pickerMonth.curtainColor &&
+                pickerMonth.curtainColor == pickerDay.curtainColor
             ) {
-                return mPickerYear.curtainColor
+                return pickerYear.curtainColor
             }
             throw RuntimeException("Can not get curtain color correctly from WheelDatePicker!")
         }
         set(color) {
-            mPickerYear.curtainColor = color
-            mPickerMonth.curtainColor = color
-            mPickerDay.curtainColor = color
+            pickerYear.curtainColor = color
+            pickerMonth.curtainColor = color
+            pickerDay.curtainColor = color
         }
 
     override var isAtmospheric: Boolean
-        get() = mPickerYear.isAtmospheric && mPickerMonth.isAtmospheric && mPickerDay.isAtmospheric
+        get() = pickerYear.isAtmospheric && pickerMonth.isAtmospheric && pickerDay.isAtmospheric
         set(hasAtmospheric) {
-            mPickerYear.isAtmospheric = hasAtmospheric
-            mPickerMonth.isAtmospheric = hasAtmospheric
-            mPickerDay.isAtmospheric = hasAtmospheric
+            pickerYear.isAtmospheric = hasAtmospheric
+            pickerMonth.isAtmospheric = hasAtmospheric
+            pickerDay.isAtmospheric = hasAtmospheric
         }
 
     override var isCurved: Boolean
-        get() = mPickerYear.isCurved && mPickerMonth.isCurved && mPickerDay.isCurved
+        get() = pickerYear.isCurved && pickerMonth.isCurved && pickerDay.isCurved
         set(isCurved) {
-            mPickerYear.isCurved = isCurved
-            mPickerMonth.isCurved = isCurved
-            mPickerDay.isCurved = isCurved
+            pickerYear.isCurved = isCurved
+            pickerMonth.isCurved = isCurved
+            pickerDay.isCurved = isCurved
         }
 
     @Deprecated("Unsupported", ReplaceWith("nothing"))
@@ -336,26 +336,26 @@ class WheelDatePicker @JvmOverloads constructor(
 
     override var typeface: Typeface?
         get() {
-            if (mPickerYear.typeface == mPickerMonth.typeface &&
-                mPickerMonth.typeface == mPickerDay.typeface
+            if (pickerYear.typeface == pickerMonth.typeface &&
+                pickerMonth.typeface == pickerDay.typeface
             ) {
-                return mPickerYear.typeface
+                return pickerYear.typeface
             }
             throw RuntimeException("Can not get typeface correctly from WheelDatePicker!")
         }
         set(tf) {
-            mPickerYear.typeface = tf
-            mPickerMonth.typeface = tf
-            mPickerDay.typeface = tf
+            pickerYear.typeface = tf
+            pickerMonth.typeface = tf
+            pickerDay.typeface = tf
         }
 
     override fun setOnDateSelectedListener(listener: OnDateSelectedListener?) {
-        mListener = listener
+        onDateSelectedListener = listener
     }
 
     override val currentDate: Date
         get() {
-            val date = "$mYear-$mMonth-$mDay"
+            val date = "$_year-$_month-$_day"
             return try {
                 SDF.parse(date) ?: Date()
             } catch (e: ParseException) {
@@ -365,93 +365,93 @@ class WheelDatePicker @JvmOverloads constructor(
         }
 
     override var itemAlignYear: Int
-        get() = mPickerYear.itemAlign
+        get() = pickerYear.itemAlign
         set(align) {
-            mPickerYear.itemAlign = align
+            pickerYear.itemAlign = align
         }
 
     override var itemAlignMonth: Int
-        get() = mPickerMonth.itemAlign
+        get() = pickerMonth.itemAlign
         set(align) {
-            mPickerMonth.itemAlign = align
+            pickerMonth.itemAlign = align
         }
 
     override var itemAlignDay: Int
-        get() = mPickerDay.itemAlign
+        get() = pickerDay.itemAlign
         set(align) {
-            mPickerDay.itemAlign = align
+            pickerDay.itemAlign = align
         }
 
     override fun setYearFrame(start: Int, end: Int) {
-        mPickerYear.setYearFrame(start, end)
+        pickerYear.setYearFrame(start, end)
     }
 
     override var yearStart: Int
-        get() = mPickerYear.yearStart
+        get() = pickerYear.yearStart
         set(start) {
-            mPickerYear.yearStart = start
+            pickerYear.yearStart = start
         }
 
     override var yearEnd: Int
-        get() = mPickerYear.yearEnd
+        get() = pickerYear.yearEnd
         set(end) {
-            mPickerYear.yearEnd = end
+            pickerYear.yearEnd = end
         }
 
     override var selectedYear: Int
-        get() = mPickerYear.selectedYear
+        get() = pickerYear.selectedYear
         set(year) {
-            mYear = year
-            mPickerYear.selectedYear = year
-            mPickerDay.year = year
+            _year = year
+            pickerYear.selectedYear = year
+            pickerDay.year = year
         }
 
     override val currentYear: Int
-        get() = mPickerYear.currentYear
+        get() = pickerYear.currentYear
 
     override var selectedMonth: Int
-        get() = mPickerMonth.selectedMonth
+        get() = pickerMonth.selectedMonth
         set(month) {
-            mMonth = month
-            mPickerMonth.selectedMonth = month
-            mPickerDay.month = month
+            _month = month
+            pickerMonth.selectedMonth = month
+            pickerDay.month = month
         }
 
     override val currentMonth: Int
-        get() = mPickerMonth.currentMonth
+        get() = pickerMonth.currentMonth
 
     override var selectedDay: Int
-        get() = mPickerDay.selectedDay
+        get() = pickerDay.selectedDay
         set(day) {
-            mDay = day
-            mPickerDay.selectedDay = day
+            _day = day
+            pickerDay.selectedDay = day
         }
 
     override val currentDay: Int
-        get() = mPickerDay.currentDay
+        get() = pickerDay.currentDay
 
     override fun setYearAndMonth(year: Int, month: Int) {
-        mYear = year
-        mMonth = month
-        mPickerYear.selectedYear = year
-        mPickerMonth.selectedMonth = month
-        mPickerDay.setYearAndMonth(year, month)
+        _year = year
+        _month = month
+        pickerYear.selectedYear = year
+        pickerMonth.selectedMonth = month
+        pickerDay.setYearAndMonth(year, month)
     }
 
     override var year: Int
         get() = selectedYear
         set(year) {
-            mYear = year
-            mPickerYear.selectedYear = year
-            mPickerDay.year = year
+            _year = year
+            pickerYear.selectedYear = year
+            pickerDay.year = year
         }
 
     override var month: Int
         get() = selectedMonth
         set(month) {
-            mMonth = month
-            mPickerMonth.selectedMonth = month
-            mPickerDay.month = month
+            _month = month
+            pickerMonth.selectedMonth = month
+            pickerDay.month = month
         }
 
     interface OnDateSelectedListener {

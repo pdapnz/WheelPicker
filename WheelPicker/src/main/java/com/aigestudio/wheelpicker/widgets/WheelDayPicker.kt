@@ -22,11 +22,11 @@ class WheelDayPicker @JvmOverloads constructor(
         private val DAYS: MutableMap<Int, List<Int>> = HashMap()
     }
 
-    private val mCalendar = Calendar.getInstance()
+    private val calendar = Calendar.getInstance()
 
-    private var _year = mCalendar.get(Calendar.YEAR)
-    private var _month = mCalendar.get(Calendar.MONTH)
-    private var _selectedDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+    private var _year = calendar.get(Calendar.YEAR)
+    private var _month = calendar.get(Calendar.MONTH)
+    private var _selectedDay = calendar.get(Calendar.DAY_OF_MONTH)
 
     override var selectedDay: Int
         get() = _selectedDay
@@ -64,10 +64,10 @@ class WheelDayPicker @JvmOverloads constructor(
     }
 
     private fun updateDays() {
-        mCalendar.set(Calendar.YEAR, _year)
-        mCalendar.set(Calendar.MONTH, _month)
+        calendar.set(Calendar.YEAR, _year)
+        calendar.set(Calendar.MONTH, _month)
 
-        val days = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         var dataList = DAYS[days]
         if (null == dataList) {
             dataList = ArrayList()

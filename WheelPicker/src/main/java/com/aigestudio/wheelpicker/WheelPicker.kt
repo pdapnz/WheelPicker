@@ -62,10 +62,10 @@ open class WheelPicker @JvmOverloads constructor(
         private val TAG = WheelPicker::class.java.simpleName
     }
 
-    private val mHandler = Handler(Looper.getMainLooper())
-    private val mPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG or Paint.LINEAR_TEXT_FLAG)
-    private val mScroller: Scroller = Scroller(context)
-    private var mTracker: VelocityTracker? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG or Paint.LINEAR_TEXT_FLAG)
+    private val scroller: Scroller = Scroller(context)
+    private var tracker: VelocityTracker? = null
 
     /**
      * 相关监听器
@@ -73,17 +73,17 @@ open class WheelPicker @JvmOverloads constructor(
      * @see OnWheelChangeListener
      * @see OnItemSelectedListener
      */
-    private var mOnItemSelectedListener: OnItemSelectedListener? = null
-    private var mOnWheelChangeListener: OnWheelChangeListener? = null
+    private var onItemSelectedListener: OnItemSelectedListener? = null
+    private var onWheelChangeListener: OnWheelChangeListener? = null
 
-    private val mRectDrawn = Rect()
-    private val mRectIndicatorHead = Rect()
-    private val mRectIndicatorFoot = Rect()
-    private val mRectCurrentItem = Rect()
+    private val rectDrawn = Rect()
+    private val rectIndicatorHead = Rect()
+    private val rectIndicatorFoot = Rect()
+    private val rectCurrentItem = Rect()
 
-    private val mCamera = Camera()
-    private val mMatrixRotate = Matrix()
-    private val mMatrixDepth = Matrix()
+    private val camera = Camera()
+    private val matrixRotate = Matrix()
+    private val matrixDepth = Matrix()
 
     /**
      * 数据源
@@ -97,14 +97,9 @@ open class WheelPicker @JvmOverloads constructor(
                 selectedItemPosition = value.size - 1
                 // currentItemPosition 会在 selectedItemPosition 的 setter 中更新
             } else {
-                // 如果没有越界，也需要重置 currentItemPosition，以防之前的逻辑
-                // 但原 Java 逻辑是 mSelectedItemPosition = mCurrentItemPosition
-                // 这里的逻辑有点绕，参考 Java:
-                // mSelectedItemPosition = mCurrentItemPosition; (in else block)
-                // 实际上是保持当前位置
                 selectedItemPosition = currentItemPosition
             }
-            mScrollOffsetY = 0
+            scrollOffsetY = 0
             computeTextSize()
             computeFlingLimitY()
             requestLayout()
@@ -141,18 +136,18 @@ open class WheelPicker @JvmOverloads constructor(
     /**
      * 滚轮选择器将会绘制的数据项数量
      */
-    private var mDrawnItemCount = 0
+    private var drawnItemCount = 0
 
     /**
      * 滚轮选择器将会绘制的Item数量的一半
      */
-    private var mHalfDrawnItemCount = 0
+    private var halfDrawnItemCount = 0
 
     /**
      * 单个文本最大宽高
      */
-    private var mTextMaxWidth = 0
-    private var mTextMaxHeight = 0
+    private var textMaxWidth = 0
+    private var textMaxHeight = 0
 
     /**
      * 数据项文本颜色以及被选中的数据项文本颜色
@@ -181,7 +176,7 @@ open class WheelPicker @JvmOverloads constructor(
     override var itemTextSize: Int = 0
         set(value) {
             field = value
-            mPaint.textSize = value.toFloat()
+            paint.textSize = value.toFloat()
             computeTextSize()
             requestLayout()
             invalidate()
@@ -249,13 +244,13 @@ open class WheelPicker @JvmOverloads constructor(
     /**
      * 滚轮选择器单个数据项高度以及单个数据项一半的高度
      */
-    private var mItemHeight = 0
-    private var mHalfItemHeight = 0
+    private var itemHeight = 0
+    private var halfItemHeight = 0
 
     /**
      * 滚轮选择器内容区域高度的一半
      */
-    private var mHalfWheelHeight = 0
+    private var halfWheelHeight = 0
 
     /**
      * 当前被选中的数据项所显示的数据在数据源中的位置
@@ -272,7 +267,7 @@ open class WheelPicker @JvmOverloads constructor(
             }
             field = pos
             currentItemPosition = pos
-            mScrollOffsetY = 0
+            scrollOffsetY = 0
             computeFlingLimitY()
             requestLayout()
             invalidate()
@@ -289,31 +284,31 @@ open class WheelPicker @JvmOverloads constructor(
     /**
      * 滚轮滑动时可以滑动到的最小/最大的Y坐标
      */
-    private var mMinFlingY = 0
-    private var mMaxFlingY = 0
+    private var minFlingY = 0
+    private var maxFlingY = 0
 
     /**
      * 滚轮滑动时的最小/最大速度
      */
-    private var mMinimumVelocity = 50
-    private var mMaximumVelocity = 8000
+    private var minimumVelocity = 50
+    private var maximumVelocity = 8000
 
     /**
      * 滚轮选择器中心坐标
      */
-    private var mWheelCenterX = 0
-    private var mWheelCenterY = 0
+    private var wheelCenterX = 0
+    private var wheelCenterY = 0
 
     /**
      * 滚轮选择器绘制中心坐标
      */
-    private var mDrawnCenterX = 0
-    private var mDrawnCenterY = 0
+    private var drawnCenterX = 0
+    private var drawnCenterY = 0
 
     /**
      * 滚轮选择器视图区域在Y轴方向上的偏移值
      */
-    private var mScrollOffsetY = 0
+    private var scrollOffsetY = 0
 
     /**
      * 滚轮选择器中最宽或最高的文本在数据源中的位置
@@ -331,17 +326,17 @@ open class WheelPicker @JvmOverloads constructor(
     /**
      * 用户手指上一次触摸事件发生时事件Y坐标
      */
-    private var mLastPointY = 0
+    private var lastPointY = 0
 
     /**
      * 手指触摸屏幕时事件点的Y坐标
      */
-    private var mDownPointY = 0
+    private var downPointY = 0
 
     /**
      * 点击与触摸的切换阀值
      */
-    private var mTouchSlop = 8
+    private var touchSlop = 8
 
     /**
      * 滚轮选择器的每一个数据项文本是否拥有相同的宽度
@@ -425,20 +420,12 @@ open class WheelPicker @JvmOverloads constructor(
         val a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker)
         val idData = a.getResourceId(R.styleable.WheelPicker_wheel_data, 0)
         
-        // 初始化数据
         val dataArray = resources.getStringArray(
             if (idData == 0) R.array.WheelArrayDefault else idData
         )
-        // 这里的 data setter 会被调用，但这可能导致一些计算方法在属性尚未完全初始化时被调用
-        // 建议先使用幕后字段赋值，最后统一更新
-        // 为了安全起见，这里先直接赋值给 field，然后手动调用初始化方法
-        // 或者因为 Kotlin 属性初始化的顺序，这些 var 已经在上面被初始化了，所以 setter 是安全的
-        
-        // 注意：data setter 依赖 selectedItemPosition，所以得小心顺序
-        // 这里为了模拟 Java 构造函数的行为，我们尽量直接赋值给 fields，最后调用 update 方法
         
         @Suppress("UNCHECKED_CAST")
-        data = dataArray.toList() // 这会触发 setter
+        data = dataArray.toList()
         
         itemTextSize = a.getDimensionPixelSize(
             R.styleable.WheelPicker_wheel_item_text_size,
@@ -475,63 +462,55 @@ open class WheelPicker @JvmOverloads constructor(
         itemAlign = a.getInt(R.styleable.WheelPicker_wheel_item_align, ALIGN_CENTER)
         a.recycle()
 
-        // 可见数据项改变后更新与之相关的参数
-        // Update relevant parameters when the count of visible item changed
         updateVisibleItemCount()
 
-        mPaint.textSize = itemTextSize.toFloat()
+        paint.textSize = itemTextSize.toFloat()
 
-        // 更新文本对齐方式
-        // Update alignment of text
         updateItemTextAlign()
 
-        // 计算文本尺寸
-        // Correct sizes of text
         computeTextSize()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
             val conf = ViewConfiguration.get(context)
-            mMinimumVelocity = conf.scaledMinimumFlingVelocity
-            mMaximumVelocity = conf.scaledMaximumFlingVelocity
-            mTouchSlop = conf.scaledTouchSlop
+            minimumVelocity = conf.scaledMinimumFlingVelocity
+            maximumVelocity = conf.scaledMaximumFlingVelocity
+            touchSlop = conf.scaledTouchSlop
         }
     }
 
     private fun updateVisibleItemCount() {
         if (visibleItemCount < 2) throw ArithmeticException("Wheel's visible item count can not be less than 2!")
 
-        // 确保滚轮选择器可见数据项数量为奇数
-        // Be sure count of visible item is odd number
         if (visibleItemCount % 2 == 0) visibleItemCount += 1
-        mDrawnItemCount = visibleItemCount + 2
-        mHalfDrawnItemCount = mDrawnItemCount / 2
+        drawnItemCount = visibleItemCount + 2
+        halfDrawnItemCount = drawnItemCount / 2
     }
 
     private fun computeTextSize() {
-        mTextMaxWidth = 0
-        mTextMaxHeight = 0
+        textMaxWidth = 0
+        textMaxHeight = 0
         if (hasSameWidth) {
-            mTextMaxWidth = mPaint.measureText(data!![0].toString()).toInt()
+            textMaxWidth = paint.measureText(data!![0].toString()).toInt()
         } else if (isPosInRang(maximumWidthTextPosition)) {
-            mTextMaxWidth = mPaint.measureText(data!![maximumWidthTextPosition].toString()).toInt()
+            textMaxWidth = paint.measureText(data!![maximumWidthTextPosition].toString()).toInt()
         } else if (!TextUtils.isEmpty(maximumWidthText)) {
-            mTextMaxWidth = mPaint.measureText(maximumWidthText).toInt()
+            textMaxWidth = paint.measureText(maximumWidthText).toInt()
         } else {
             data?.forEach { obj ->
                 val text = obj.toString()
-                val width = mPaint.measureText(text).toInt()
-                mTextMaxWidth = max(mTextMaxWidth, width)
+                val width = paint.measureText(text).toInt()
+                textMaxWidth = max(textMaxWidth, width)
             }
         }
-        val metrics = mPaint.fontMetrics
-        mTextMaxHeight = (metrics.bottom - metrics.top).toInt()
+        val metrics = paint.fontMetrics
+        textMaxHeight = (metrics.bottom - metrics.top).toInt()
     }
 
     private fun updateItemTextAlign() {
         when (itemAlign) {
-            ALIGN_LEFT -> mPaint.textAlign = Paint.Align.LEFT
-            ALIGN_RIGHT -> mPaint.textAlign = Paint.Align.RIGHT
-            else -> mPaint.textAlign = Paint.Align.CENTER
+            ALIGN_LEFT -> paint.textAlign = Paint.Align.LEFT
+            ALIGN_RIGHT -> paint.textAlign = Paint.Align.RIGHT
+            else -> paint.textAlign = Paint.Align.CENTER
         }
     }
 
@@ -542,26 +521,18 @@ open class WheelPicker @JvmOverloads constructor(
         val sizeWidth = MeasureSpec.getSize(widthMeasureSpec)
         val sizeHeight = MeasureSpec.getSize(heightMeasureSpec)
 
-        // 计算原始内容尺寸
-        // Correct sizes of original content
-        var resultWidth = mTextMaxWidth
-        var resultHeight = mTextMaxHeight * visibleItemCount + itemSpace * (visibleItemCount - 1)
+        var resultWidth = textMaxWidth
+        var resultHeight = textMaxHeight * visibleItemCount + itemSpace * (visibleItemCount - 1)
 
-        // 如果开启弯曲效果则需要重新计算弯曲后的尺寸
-        // Correct view sizes again if curved is enable
         if (isCurved) {
             resultHeight = (2 * resultHeight / Math.PI).toInt()
         }
         if (isDebug) Log.i(TAG, "Wheel's content size is ($resultWidth:$resultHeight)")
 
-        // 考虑内边距对尺寸的影响
-        // Consideration padding influence the view sizes
         resultWidth += paddingLeft + paddingRight
         resultHeight += paddingTop + paddingBottom
         if (isDebug) Log.i(TAG, "Wheel's size is ($resultWidth:$resultHeight)")
 
-        // 考虑父容器对尺寸的影响
-        // Consideration sizes of parent can influence the view sizes
         resultWidth = measureSize(modeWidth, sizeWidth, resultWidth)
         resultHeight = measureSize(modeHeight, sizeHeight, resultHeight)
 
@@ -580,97 +551,83 @@ open class WheelPicker @JvmOverloads constructor(
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
-        // 设置内容区域
-        // Set content region
-        mRectDrawn.set(
+        rectDrawn.set(
             paddingLeft, paddingTop, width - paddingRight,
             height - paddingBottom
         )
         if (isDebug) Log.i(
-            TAG, "Wheel's drawn rect size is (" + mRectDrawn.width() + ":" +
-                    mRectDrawn.height() + ") and location is (" + mRectDrawn.left + ":" +
-                    mRectDrawn.top + ")"
+            TAG, "Wheel's drawn rect size is (" + rectDrawn.width() + ":" +
+                    rectDrawn.height() + ") and location is (" + rectDrawn.left + ":" +
+                    rectDrawn.top + ")"
         )
 
-        // 获取内容区域中心坐标
-        // Get the center coordinates of content region
-        mWheelCenterX = mRectDrawn.centerX()
-        mWheelCenterY = mRectDrawn.centerY()
+        wheelCenterX = rectDrawn.centerX()
+        wheelCenterY = rectDrawn.centerY()
 
-        // 计算数据项绘制中心
-        // Correct item drawn center
         computeDrawnCenter()
 
-        mHalfWheelHeight = mRectDrawn.height() / 2
+        halfWheelHeight = rectDrawn.height() / 2
 
-        mItemHeight = mRectDrawn.height() / visibleItemCount
-        mHalfItemHeight = mItemHeight / 2
+        itemHeight = rectDrawn.height() / visibleItemCount
+        halfItemHeight = itemHeight / 2
 
-        // 初始化滑动最大坐标
-        // Initialize fling max Y-coordinates
         computeFlingLimitY()
 
-        // 计算指示器绘制区域
-        // Correct region of indicator
         computeIndicatorRect()
 
-        // 计算当前选中的数据项区域
-        // Correct region of current select item
         computeCurrentItemRect()
     }
 
     private fun computeDrawnCenter() {
-        mDrawnCenterX = when (itemAlign) {
-            ALIGN_LEFT -> mRectDrawn.left
-            ALIGN_RIGHT -> mRectDrawn.right
-            else -> mWheelCenterX
+        drawnCenterX = when (itemAlign) {
+            ALIGN_LEFT -> rectDrawn.left
+            ALIGN_RIGHT -> rectDrawn.right
+            else -> wheelCenterX
         }
-        mDrawnCenterY = (mWheelCenterY - ((mPaint.ascent() + mPaint.descent()) / 2)).toInt()
+        drawnCenterY = (wheelCenterY - ((paint.ascent() + paint.descent()) / 2)).toInt()
     }
 
     private fun computeFlingLimitY() {
-        val currentItemOffset = selectedItemPosition * mItemHeight
-        mMinFlingY = if (isCyclic) Int.MIN_VALUE else -mItemHeight * ((data?.size ?: 0) - 1) + currentItemOffset
-        mMaxFlingY = if (isCyclic) Int.MAX_VALUE else currentItemOffset
+        val currentItemOffset = selectedItemPosition * itemHeight
+        minFlingY = if (isCyclic) Int.MIN_VALUE else -itemHeight * ((data?.size ?: 0) - 1) + currentItemOffset
+        maxFlingY = if (isCyclic) Int.MAX_VALUE else currentItemOffset
     }
 
     private fun computeIndicatorRect() {
         if (!isIndicator) return
         val halfIndicatorSize = indicatorSize / 2
-        val indicatorHeadCenterY = mWheelCenterY + mHalfItemHeight
-        val indicatorFootCenterY = mWheelCenterY - mHalfItemHeight
-        mRectIndicatorHead.set(
-            mRectDrawn.left, indicatorHeadCenterY - halfIndicatorSize,
-            mRectDrawn.right, indicatorHeadCenterY + halfIndicatorSize
+        val indicatorHeadCenterY = wheelCenterY + halfItemHeight
+        val indicatorFootCenterY = wheelCenterY - halfItemHeight
+        rectIndicatorHead.set(
+            rectDrawn.left, indicatorHeadCenterY - halfIndicatorSize,
+            rectDrawn.right, indicatorHeadCenterY + halfIndicatorSize
         )
-        mRectIndicatorFoot.set(
-            mRectDrawn.left, indicatorFootCenterY - halfIndicatorSize,
-            mRectDrawn.right, indicatorFootCenterY + halfIndicatorSize
+        rectIndicatorFoot.set(
+            rectDrawn.left, indicatorFootCenterY - halfIndicatorSize,
+            rectDrawn.right, indicatorFootCenterY + halfIndicatorSize
         )
     }
 
     private fun computeCurrentItemRect() {
         if (!isCurtain && selectedItemTextColor == -1) return
-        mRectCurrentItem.set(
-            mRectDrawn.left, mWheelCenterY - mHalfItemHeight, mRectDrawn.right,
-            mWheelCenterY + mHalfItemHeight
+        rectCurrentItem.set(
+            rectDrawn.left, wheelCenterY - halfItemHeight, rectDrawn.right,
+            wheelCenterY + halfItemHeight
         )
     }
 
     override fun onDraw(canvas: Canvas) {
-        mOnWheelChangeListener?.onWheelScrolled(mScrollOffsetY)
+        onWheelChangeListener?.onWheelScrolled(scrollOffsetY)
         
-        // 这里的 mItemHeight 在初始化前可能为 0，会导致除零异常，加个保护
-        if (mItemHeight == 0) return 
+        if (itemHeight == 0) return 
 
-        val drawnDataStartPos = -mScrollOffsetY / mItemHeight - mHalfDrawnItemCount
+        val drawnDataStartPos = -scrollOffsetY / itemHeight - halfDrawnItemCount
         var drawnDataPos = drawnDataStartPos + selectedItemPosition
-        var drawnOffsetPos = -mHalfDrawnItemCount
+        var drawnOffsetPos = -halfDrawnItemCount
         
-        while (drawnDataPos < drawnDataStartPos + selectedItemPosition + mDrawnItemCount) {
+        while (drawnDataPos < drawnDataStartPos + selectedItemPosition + drawnItemCount) {
             var dataStr = ""
             if (isCyclic) {
-                // data 可能是 null, 使用 elvis
                 val size = data?.size ?: 0
                 if (size > 0) {
                     var actualPos = drawnDataPos % size
@@ -680,131 +637,119 @@ open class WheelPicker @JvmOverloads constructor(
             } else {
                 if (isPosInRang(drawnDataPos)) dataStr = data!![drawnDataPos].toString()
             }
-            mPaint.color = itemTextColor
-            mPaint.style = Paint.Style.FILL
-            val mDrawnItemCenterY = mDrawnCenterY + drawnOffsetPos * mItemHeight +
-                    mScrollOffsetY % mItemHeight
+            paint.color = itemTextColor
+            paint.style = Paint.Style.FILL
+            val drawnItemCenterY = drawnCenterY + drawnOffsetPos * itemHeight +
+                    scrollOffsetY % itemHeight
 
             var distanceToCenter = 0
             if (isCurved) {
-                // 计算数据项绘制中心距离滚轮中心的距离比率
-                // Correct ratio of item's drawn center to wheel center
-                val ratio = (mDrawnCenterY - abs(mDrawnCenterY - mDrawnItemCenterY) -
-                        mRectDrawn.top) * 1.0F / (mDrawnCenterY - mRectDrawn.top)
+                val ratio = (drawnCenterY - abs(drawnCenterY - drawnItemCenterY) -
+                        rectDrawn.top) * 1.0F / (drawnCenterY - rectDrawn.top)
 
-                // 计算单位
-                // Correct unit
                 var unit = 0
-                if (mDrawnItemCenterY > mDrawnCenterY) unit = 1 else if (mDrawnItemCenterY < mDrawnCenterY) unit = -1
+                if (drawnItemCenterY > drawnCenterY) unit = 1 else if (drawnItemCenterY < drawnCenterY) unit = -1
 
                 var degree = -(1 - ratio) * 90 * unit
                 if (degree < -90) degree = -90f
                 if (degree > 90) degree = 90f
                 distanceToCenter = computeSpace(degree.toInt())
 
-                var transX = mWheelCenterX
+                var transX = wheelCenterX
                 when (itemAlign) {
-                    ALIGN_LEFT -> transX = mRectDrawn.left
-                    ALIGN_RIGHT -> transX = mRectDrawn.right
+                    ALIGN_LEFT -> transX = rectDrawn.left
+                    ALIGN_RIGHT -> transX = rectDrawn.right
                 }
-                val transY = mWheelCenterY - distanceToCenter
+                val transY = wheelCenterY - distanceToCenter
 
-                mCamera.save()
-                mCamera.rotateX(degree)
-                mCamera.getMatrix(mMatrixRotate)
-                mCamera.restore()
-                mMatrixRotate.preTranslate(-transX.toFloat(), -transY.toFloat())
-                mMatrixRotate.postTranslate(transX.toFloat(), transY.toFloat())
+                camera.save()
+                camera.rotateX(degree)
+                camera.getMatrix(matrixRotate)
+                camera.restore()
+                matrixRotate.preTranslate(-transX.toFloat(), -transY.toFloat())
+                matrixRotate.postTranslate(transX.toFloat(), transY.toFloat())
 
-                mCamera.save()
-                mCamera.translate(0f, 0f, computeDepth(degree.toInt()).toFloat())
-                mCamera.getMatrix(mMatrixDepth)
-                mCamera.restore()
-                mMatrixDepth.preTranslate(-transX.toFloat(), -transY.toFloat())
-                mMatrixDepth.postTranslate(transX.toFloat(), transY.toFloat())
+                camera.save()
+                camera.translate(0f, 0f, computeDepth(degree.toInt()).toFloat())
+                camera.getMatrix(matrixDepth)
+                camera.restore()
+                matrixDepth.preTranslate(-transX.toFloat(), -transY.toFloat())
+                matrixDepth.postTranslate(transX.toFloat(), transY.toFloat())
 
-                mMatrixRotate.postConcat(mMatrixDepth)
+                matrixRotate.postConcat(matrixDepth)
             }
             if (isAtmospheric) {
                 var alpha =
-                    ((mDrawnCenterY - abs(mDrawnCenterY - mDrawnItemCenterY)) * 1.0F / mDrawnCenterY * 255).toInt()
+                    ((drawnCenterY - abs(drawnCenterY - drawnItemCenterY)) * 1.0F / drawnCenterY * 255).toInt()
                 alpha = if (alpha < 0) 0 else alpha
-                mPaint.alpha = alpha
+                paint.alpha = alpha
             }
-            // 根据卷曲与否计算数据项绘制Y方向中心坐标
-            // Correct item's drawn centerY base on curved state
-            val drawnCenterY = if (isCurved) mDrawnCenterY - distanceToCenter else mDrawnItemCenterY
+            val itemDrawnCenterY = if (isCurved) drawnCenterY - distanceToCenter else drawnItemCenterY
 
-            // 判断是否需要为当前数据项绘制不同颜色
-            // Judges need to draw different color for current item or not
             if (selectedItemTextColor != -1) {
                 canvas.save()
-                if (isCurved) canvas.concat(mMatrixRotate)
-                canvas.clipRect(mRectCurrentItem, Region.Op.DIFFERENCE)
-                canvas.drawText(dataStr, mDrawnCenterX.toFloat(), drawnCenterY.toFloat(), mPaint)
+                if (isCurved) canvas.concat(matrixRotate)
+                canvas.clipRect(rectCurrentItem, Region.Op.DIFFERENCE)
+                canvas.drawText(dataStr, drawnCenterX.toFloat(), itemDrawnCenterY.toFloat(), paint)
                 canvas.restore()
 
-                mPaint.color = selectedItemTextColor
+                paint.color = selectedItemTextColor
                 canvas.save()
-                if (isCurved) canvas.concat(mMatrixRotate)
-                canvas.clipRect(mRectCurrentItem)
-                canvas.drawText(dataStr, mDrawnCenterX.toFloat(), drawnCenterY.toFloat(), mPaint)
+                if (isCurved) canvas.concat(matrixRotate)
+                canvas.clipRect(rectCurrentItem)
+                canvas.drawText(dataStr, drawnCenterX.toFloat(), itemDrawnCenterY.toFloat(), paint)
                 canvas.restore()
             } else {
                 canvas.save()
-                canvas.clipRect(mRectDrawn)
-                if (isCurved) canvas.concat(mMatrixRotate)
-                canvas.drawText(dataStr, mDrawnCenterX.toFloat(), drawnCenterY.toFloat(), mPaint)
+                canvas.clipRect(rectDrawn)
+                if (isCurved) canvas.concat(matrixRotate)
+                canvas.drawText(dataStr, drawnCenterX.toFloat(), itemDrawnCenterY.toFloat(), paint)
                 canvas.restore()
             }
             if (isDebug) {
                 canvas.save()
-                canvas.clipRect(mRectDrawn)
-                mPaint.color = -0x11cccd // 0xFFEE3333
-                val lineCenterY = mWheelCenterY + drawnOffsetPos * mItemHeight
+                canvas.clipRect(rectDrawn)
+                paint.color = -0x11cccd // 0xFFEE3333
+                val lineCenterY = wheelCenterY + drawnOffsetPos * itemHeight
                 canvas.drawLine(
-                    mRectDrawn.left.toFloat(), lineCenterY.toFloat(),
-                    mRectDrawn.right.toFloat(), lineCenterY.toFloat(), mPaint
+                    rectDrawn.left.toFloat(), lineCenterY.toFloat(),
+                    rectDrawn.right.toFloat(), lineCenterY.toFloat(), paint
                 )
-                mPaint.color = -0xccCC12 // 0xFF3333EE
-                mPaint.style = Paint.Style.STROKE
-                val top = lineCenterY - mHalfItemHeight
+                paint.color = -0xccCC12 // 0xFF3333EE
+                paint.style = Paint.Style.STROKE
+                val top = lineCenterY - halfItemHeight
                 canvas.drawRect(
-                    mRectDrawn.left.toFloat(), top.toFloat(),
-                    mRectDrawn.right.toFloat(), (top + mItemHeight).toFloat(), mPaint
+                    rectDrawn.left.toFloat(), top.toFloat(),
+                    rectDrawn.right.toFloat(), (top + itemHeight).toFloat(), paint
                 )
                 canvas.restore()
             }
             drawnDataPos++
             drawnOffsetPos++
         }
-        // 是否需要绘制幕布
-        // Need to draw curtain or not
         if (isCurtain) {
-            mPaint.color = curtainColor
-            mPaint.style = Paint.Style.FILL
-            canvas.drawRect(mRectCurrentItem, mPaint)
+            paint.color = curtainColor
+            paint.style = Paint.Style.FILL
+            canvas.drawRect(rectCurrentItem, paint)
         }
-        // 是否需要绘制指示器
-        // Need to draw indicator or not
         if (isIndicator) {
-            mPaint.color = indicatorColor
-            mPaint.style = Paint.Style.FILL
-            canvas.drawRect(mRectIndicatorHead, mPaint)
-            canvas.drawRect(mRectIndicatorFoot, mPaint)
+            paint.color = indicatorColor
+            paint.style = Paint.Style.FILL
+            canvas.drawRect(rectIndicatorHead, paint)
+            canvas.drawRect(rectIndicatorFoot, paint)
         }
         if (isDebug) {
-            mPaint.color = 0x4433EE33
-            mPaint.style = Paint.Style.FILL
-            canvas.drawRect(0f, 0f, paddingLeft.toFloat(), height.toFloat(), mPaint)
-            canvas.drawRect(0f, 0f, width.toFloat(), paddingTop.toFloat(), mPaint)
+            paint.color = 0x4433EE33
+            paint.style = Paint.Style.FILL
+            canvas.drawRect(0f, 0f, paddingLeft.toFloat(), height.toFloat(), paint)
+            canvas.drawRect(0f, 0f, width.toFloat(), paddingTop.toFloat(), paint)
             canvas.drawRect(
                 (width - paddingRight).toFloat(), 0f, width.toFloat(),
-                height.toFloat(), mPaint
+                height.toFloat(), paint
             )
             canvas.drawRect(
                 0f, (height - paddingBottom).toFloat(), width.toFloat(),
-                height.toFloat(), mPaint
+                height.toFloat(), paint
             )
         }
     }
@@ -814,45 +759,40 @@ open class WheelPicker @JvmOverloads constructor(
     }
 
     private fun computeSpace(degree: Int): Int {
-        return (sin(Math.toRadians(degree.toDouble())) * mHalfWheelHeight).toInt()
+        return (sin(Math.toRadians(degree.toDouble())) * halfWheelHeight).toInt()
     }
 
     private fun computeDepth(degree: Int): Int {
-        return (mHalfWheelHeight - cos(Math.toRadians(degree.toDouble())) * mHalfWheelHeight).toInt()
+        return (halfWheelHeight - cos(Math.toRadians(degree.toDouble())) * halfWheelHeight).toInt()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (mTracker == null) {
-            mTracker = VelocityTracker.obtain()
+        if (tracker == null) {
+            tracker = VelocityTracker.obtain()
         }
-        mTracker?.addMovement(event)
+        tracker?.addMovement(event)
         
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 parent?.requestDisallowInterceptTouchEvent(true)
-                if (!mScroller.isFinished) {
-                    mScroller.abortAnimation()
+                if (!scroller.isFinished) {
+                    scroller.abortAnimation()
                     isForceFinishScroll = true
                 }
-                mLastPointY = event.y.toInt()
-                mDownPointY = mLastPointY
+                lastPointY = event.y.toInt()
+                downPointY = lastPointY
             }
             MotionEvent.ACTION_MOVE -> {
-                if (abs(mDownPointY - event.y) < mTouchSlop) {
+                if (abs(downPointY - event.y) < touchSlop) {
                     isClick = true
-                    // Kotlin when is exhaustive, but here we just want to break logic flow
-                    // In kotlin, we continue execution. To break "case", we don't need 'break'.
-                    // But here we need to skip the rest of the code in this case.
                 } else {
                     isClick = false
-                    mOnWheelChangeListener?.onWheelScrollStateChanged(SCROLL_STATE_DRAGGING)
+                    onWheelChangeListener?.onWheelScrollStateChanged(SCROLL_STATE_DRAGGING)
 
-                    // 滚动内容
-                    // Scroll WheelPicker's content
-                    val move = event.y - mLastPointY
+                    val move = event.y - lastPointY
                     if (abs(move) >= 1) {
-                        mScrollOffsetY += move.toInt()
-                        mLastPointY = event.y.toInt()
+                        scrollOffsetY += move.toInt()
+                        lastPointY = event.y.toInt()
                         invalidate()
                     }
                 }
@@ -861,49 +801,45 @@ open class WheelPicker @JvmOverloads constructor(
                 parent?.requestDisallowInterceptTouchEvent(false)
                 if (!isClick) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
-                        mTracker?.computeCurrentVelocity(1000, mMaximumVelocity.toFloat())
+                        tracker?.computeCurrentVelocity(1000, maximumVelocity.toFloat())
                     } else {
-                        mTracker?.computeCurrentVelocity(1000)
+                        tracker?.computeCurrentVelocity(1000)
                     }
 
-                    // 根据速度判断是该滚动还是滑动
-                    // Judges the WheelPicker is scroll or fling base on current velocity
                     isForceFinishScroll = false
-                    val velocity = mTracker?.yVelocity?.toInt() ?: 0
-                    if (abs(velocity) > mMinimumVelocity) {
-                        mScroller.fling(0, mScrollOffsetY, 0, velocity, 0, 0, mMinFlingY, mMaxFlingY)
-                        mScroller.finalY = mScroller.finalY +
-                                computeDistanceToEndPoint(mScroller.finalY % mItemHeight)
+                    val velocity = tracker?.yVelocity?.toInt() ?: 0
+                    if (abs(velocity) > minimumVelocity) {
+                        scroller.fling(0, scrollOffsetY, 0, velocity, 0, 0, minFlingY, maxFlingY)
+                        scroller.finalY = scroller.finalY +
+                                computeDistanceToEndPoint(scroller.finalY % itemHeight)
                     } else {
-                        mScroller.startScroll(
-                            0, mScrollOffsetY, 0,
-                            computeDistanceToEndPoint(mScrollOffsetY % mItemHeight)
+                        scroller.startScroll(
+                            0, scrollOffsetY, 0,
+                            computeDistanceToEndPoint(scrollOffsetY % itemHeight)
                         )
                     }
-                    // 校正坐标
-                    // Correct coordinates
                     if (!isCyclic) {
-                        if (mScroller.finalY > mMaxFlingY) mScroller.finalY =
-                            mMaxFlingY else if (mScroller.finalY < mMinFlingY) mScroller.finalY =
-                            mMinFlingY
+                        if (scroller.finalY > maxFlingY) scroller.finalY =
+                            maxFlingY else if (scroller.finalY < minFlingY) scroller.finalY =
+                            minFlingY
                     }
-                    mHandler.post(this)
-                    mTracker?.recycle()
-                    mTracker = null
+                    handler.post(this)
+                    tracker?.recycle()
+                    tracker = null
                 }
             }
             MotionEvent.ACTION_CANCEL -> {
                 parent?.requestDisallowInterceptTouchEvent(false)
-                mTracker?.recycle()
-                mTracker = null
+                tracker?.recycle()
+                tracker = null
             }
         }
         return true
     }
 
     private fun computeDistanceToEndPoint(remainder: Int): Int {
-        return if (abs(remainder) > mHalfItemHeight) {
-            if (mScrollOffsetY < 0) -mItemHeight - remainder else mItemHeight - remainder
+        return if (abs(remainder) > halfItemHeight) {
+            if (scrollOffsetY < 0) -itemHeight - remainder else itemHeight - remainder
         } else {
             -remainder
         }
@@ -912,21 +848,21 @@ open class WheelPicker @JvmOverloads constructor(
     override fun run() {
         val size = data?.size ?: 0
         if (size == 0) return
-        if (mScroller.isFinished && !isForceFinishScroll) {
-            if (mItemHeight == 0) return
-            var position = (-mScrollOffsetY / mItemHeight + selectedItemPosition) % size
+        if (scroller.isFinished && !isForceFinishScroll) {
+            if (itemHeight == 0) return
+            var position = (-scrollOffsetY / itemHeight + selectedItemPosition) % size
             position = if (position < 0) position + size else position
-            if (isDebug) Log.i(TAG, "$position:${data!![position]}:$mScrollOffsetY")
+            if (isDebug) Log.i(TAG, "$position:${data!![position]}:$scrollOffsetY")
             currentItemPosition = position
-            mOnItemSelectedListener?.onItemSelected(this, data!![position], position)
-            mOnWheelChangeListener?.onWheelSelected(position)
-            mOnWheelChangeListener?.onWheelScrollStateChanged(SCROLL_STATE_IDLE)
+            onItemSelectedListener?.onItemSelected(this, data!![position], position)
+            onWheelChangeListener?.onWheelSelected(position)
+            onWheelChangeListener?.onWheelScrollStateChanged(SCROLL_STATE_IDLE)
         }
-        if (mScroller.computeScrollOffset()) {
-            mOnWheelChangeListener?.onWheelScrollStateChanged(SCROLL_STATE_SCROLLING)
-            mScrollOffsetY = mScroller.currY
+        if (scroller.computeScrollOffset()) {
+            onWheelChangeListener?.onWheelScrollStateChanged(SCROLL_STATE_SCROLLING)
+            scrollOffsetY = scroller.currY
             postInvalidate()
-            mHandler.postDelayed(this, 16)
+            handler.postDelayed(this, 16)
         }
     }
 
@@ -946,23 +882,17 @@ open class WheelPicker @JvmOverloads constructor(
     }
 
     override fun setOnWheelChangeListener(listener: OnWheelChangeListener?) {
-        mOnWheelChangeListener = listener
+        onWheelChangeListener = listener
     }
 
     override fun setOnItemSelectedListener(listener: OnItemSelectedListener?) {
-        mOnItemSelectedListener = listener
+        onItemSelectedListener = listener
     }
 
-    // 这些 getTypeface / setTypeface 方法在 IWheelPicker 接口中已经是属性了
-    // 但在 View 中，getTypeface 是存在的吗？ View 没有 getTypeface，TextView 有。
-    // WheelPicker 继承自 View。
-    // IWheelPicker 定义了 `var typeface: Typeface?`
-    // 所以这里我们需要 override 属性
-
     override var typeface: Typeface?
-        get() = mPaint.typeface
+        get() = paint.typeface
         set(value) {
-            mPaint.typeface = value
+            paint.typeface = value
             computeTextSize()
             requestLayout()
             invalidate()
