@@ -1,16 +1,16 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.aigestudio.wheelpicker.demo"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.aigestudio.wheelpicker.demo"
-        minSdk = 21
-        targetSdk = 36
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }
@@ -34,7 +34,7 @@ android {
 
 dependencies {
     implementation(project(":WheelPicker"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.24")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
 }
