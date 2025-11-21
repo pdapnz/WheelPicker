@@ -17,14 +17,14 @@
 # Include
 ### Compile
 ```Gradle
-compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
+implementation 'dev.aige.pub:WheelPicker:1.2.0'
 ```
 or
 ```Maven
 <dependency>
-  <groupId>cn.aigestudio.wheelpicker</groupId>
+  <groupId>dev.aige.pub</groupId>
   <artifactId>WheelPicker</artifactId>
-  <version>1.1.2</version>
+  <version>1.2.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -105,6 +105,18 @@ compile project(':WheelPicker')
 ### 1.1.2
 * BugFix:WheelPicker can not get the height in some layout
 * Support Android Nougat
+
+### 1.2.0
+* Feature: Support Jetpack Compose
+* Feature: Migrate to Maven Central (New Group ID: dev.aige.pub)
+* Feature: Upgrade to Kotlin & Material 3
+* Optimization: Remove Handler for animation
+* Chore: Upgrade target SDK to 36
+* 新增 Jetpack Compose 支持
+* 迁移至 Maven Central (新 Group ID: dev.aige.pub)
+* 全面迁移至 Kotlin 并适配 Material 3
+* 移除 Handler 动画实现以优化性能
+* 升级 Target SDK 至 36
 
 # Function
 * Data display circulation
