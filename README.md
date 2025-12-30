@@ -11,9 +11,6 @@
 # Preview
 ![Preview](Previews/main/Preview.gif)
 
-# Demo
-[WheelPicke.APK](APK/Demo.apk)
-
 # Include
 ### Compile
 ```Gradle
@@ -33,23 +30,21 @@ or
 [WIKI](https://github.com/AigeStudio/WheelPicker/wiki/WIKI) | [帮助文档](https://github.com/AigeStudio/WheelPicker/wiki/%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3)
 
 # Versions
-### 1.0.0 beta
-* Preview for WheelPicker and support few function.
+### 1.2.0
+* Feature: Support Jetpack Compose
+* Feature: Migrate to Maven Central (New Group ID: dev.aige.pub)
+* Feature: Upgrade to Kotlin & Material 3
+* Optimization: Remove Handler for animation
+* Chore: Upgrade target SDK to 36
+* 新增 Jetpack Compose 支持
+* 迁移至 Maven Central (新 Group ID: dev.aige.pub)
+* 全面迁移至 Kotlin 并适配 Material 3
+* 移除 Handler 动画实现以优化性能
+* 升级 Target SDK 至 36
 
-### 1.0.1 beta
-* BugFix:Cache in WheelCuredPicker can not clean...a stupid mistake.
-
-### 1.0.2 beta
-* BugFix:MotionEvent lost when point outside of view in WheelCurvedPicker
-
-### 1.0.3 beta
-* BugFix:Error parameter after scroll using setXXX method
-
-### 1.1.0 Stable
-* Refactor project fix all known bug and some function additions
-* I will create a tag for old beta version but not be updated anymore
-* 重构项目发布稳定版修复测试版所有BUG以及新增功能
-* Beta版本会打上TAG方便老版本过渡但不再更新
+### 1.1.2
+* BugFix:WheelPicker can not get the height in some layout
+* Support Android Nougat
 
 ### 1.1.1
 * BugFix:Scroll automatically when touch but not move on WheelPicker in some low resolution phone
@@ -73,21 +68,23 @@ or
 * 新增年份、月份、日期选择器
 * 新增三级联动的日期选择器
 
-### 1.1.2
-* BugFix:WheelPicker can not get the height in some layout
-* Support Android Nougat
+### 1.1.0 Stable
+* Refactor project fix all known bug and some function additions
+* I will create a tag for old beta version but not be updated anymore
+* 重构项目发布稳定版修复测试版所有BUG以及新增功能
+* Beta版本会打上TAG方便老版本过渡但不再更新
 
-### 1.2.0
-* Feature: Support Jetpack Compose
-* Feature: Migrate to Maven Central (New Group ID: dev.aige.pub)
-* Feature: Upgrade to Kotlin & Material 3
-* Optimization: Remove Handler for animation
-* Chore: Upgrade target SDK to 36
-* 新增 Jetpack Compose 支持
-* 迁移至 Maven Central (新 Group ID: dev.aige.pub)
-* 全面迁移至 Kotlin 并适配 Material 3
-* 移除 Handler 动画实现以优化性能
-* 升级 Target SDK 至 36
+### 1.0.3 beta
+* BugFix:Error parameter after scroll using setXXX method
+
+### 1.0.2 beta
+* BugFix:MotionEvent lost when point outside of view in WheelCurvedPicker
+
+### 1.0.1 beta
+* BugFix:Cache in WheelCuredPicker can not clean...a stupid mistake.
+
+### 1.0.0 beta
+* Preview for WheelPicker and support few function.
 
 # Function
 * Data display circulation
