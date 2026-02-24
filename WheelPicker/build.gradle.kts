@@ -48,7 +48,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
 }
 
-mavenPublishing {
+/*mavenPublishing {
     coordinates("dev.aige.pub", "WheelPicker", "1.2.0")
 
     pom {
@@ -77,4 +77,4 @@ mavenPublishing {
 
     publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
-}
+}*/
