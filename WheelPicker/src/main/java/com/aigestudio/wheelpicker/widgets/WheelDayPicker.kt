@@ -51,12 +51,6 @@ class WheelDayPicker @JvmOverloads constructor(
             _month = value - 1
             updateDays()
         }
-    
-    override var data: List<*>?
-        get() = super.data
-        set(_) {
-            throw UnsupportedOperationException("You can not invoke setData in WheelDayPicker")
-        }
 
     init {
         updateDays()
