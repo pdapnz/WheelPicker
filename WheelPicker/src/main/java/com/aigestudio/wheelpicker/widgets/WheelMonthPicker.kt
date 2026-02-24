@@ -30,12 +30,6 @@ class WheelMonthPicker @JvmOverloads constructor(
     override val currentMonth: Int
         get() = Integer.valueOf(data!![currentItemPosition].toString())
 
-    override var data: List<*>?
-        get() = super.data
-        set(_) {
-            throw UnsupportedOperationException("You can not invoke setData in WheelMonthPicker")
-        }
-
     init {
         val dataList = ArrayList<Int>()
         for (i in 1..12) {
