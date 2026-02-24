@@ -48,12 +48,6 @@ class WheelYearPicker @JvmOverloads constructor(
     override val currentYear: Int
         get() = Integer.valueOf(data!![currentItemPosition].toString())
 
-    override var data: List<*>?
-        get() = super.data
-        set(_) {
-            throw UnsupportedOperationException("You can not invoke setData in WheelYearPicker")
-        }
-
     init {
         updateYears()
         updateSelectedYear()
