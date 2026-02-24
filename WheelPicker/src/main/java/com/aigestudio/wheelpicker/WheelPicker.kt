@@ -82,7 +82,7 @@ open class WheelPicker @JvmOverloads constructor(
     /**
      * 数据源
      */
-    override var data: List<*>? = null
+    final override var data: List<*>? = null
         set(value) {
             if (value == null) throw NullPointerException("WheelPicker's data can not be null!")
             field = value
